@@ -1,9 +1,9 @@
-from .load_image_from_custom_folder import LoadImageFromCustomFolder
+from .load_image_from_custom_folder import LoadImageFixedCustom
 
 NODE_CLASS_MAPPINGS = {
-    "LoadImageFromCustomFolder": LoadImageFromCustomFolder
+    "LoadImageFixedCustom": LoadImageFixedCustom
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "LoadImageFromCustomFolder": "📂 Load Image from Folder"
+    "LoadImageFixedCustom": "📂 Load Image (Custom Folder)"
 }
