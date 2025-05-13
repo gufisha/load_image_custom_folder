@@ -10,7 +10,7 @@ class LoadImageFromCustomFolder:
     @classmethod
     def INPUT_TYPES(cls):
         initial_image_files = ["<Select folder to see images>"]
-        default_folder_path = "./input"  # Default path for initial load
+        default_folder_path = "./input/custom"  # Default path for initial load
 
         try:
             # Check if the default directory exists before trying to list files
