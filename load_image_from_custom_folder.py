@@ -1,7 +1,10 @@
 import os
 # from PIL import Image # This line should be removed or commented if not used
+from PIL import Image, ImageOps
+import numpy as np
+import torch
 from nodes import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
-from comfy.utils import load_image
+# from comfy.utils import load_image # This will be replaced
 
 class LoadImageFromCustomFolder:
     @classmethod
@@ -53,7 +56,13 @@ class LoadImageFromCustomFolder:
         if not os.path.isfile(image_path):
             raise Exception(f"Image not found: {image_path}")
 
-        image = load_image(image_path)
+        # image = load_image(image_path) # Replace this line
+        pil_image = Image.open(image_path)
+        pil_image = ImageOps.exif_transpose(pil_image)
+        img = pil_image.convert("RGB")
+        img_array = np.array(img).astype(np.float32) / 255.0
+        image = torch.from_numpy(img_array)[None,]
+
         return (image,)
 
     @classmethod
