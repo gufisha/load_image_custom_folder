@@ -6,19 +6,35 @@ from comfy.utils import load_image
 class LoadImageFromCustomFolder:
     @classmethod
     def INPUT_TYPES(cls):
-        # Get initial list of images using the generator and default folder_path
-        default_folder_path = "./input"
+        initial_image_files = ["<Select folder to see images>"]
+        default_folder_path = "./input"  # Default path for initial load
+
         try:
-            # Call the generator with default inputs
-            generated_inputs = cls.INPUT_TYPES_GENERATOR({"folder_path": default_folder_path})
-            image_files_list = generated_inputs["image_file"][0]
-        except Exception:
-            image_files_list = ["<error loading initial files>"]
+            # Check if the default directory exists before trying to list files
+            # This makes the initial population more robust.
+            if os.path.isdir(default_folder_path):
+                # Call the generator with default inputs to get initial files
+                generated_inputs = cls.INPUT_TYPES_GENERATOR({"folder_path": default_folder_path})
+                # Ensure the generator returned the expected structure
+                if ("image_file" in generated_inputs and 
+                    isinstance(generated_inputs["image_file"], tuple) and 
+                    len(generated_inputs["image_file"]) > 0 and
+                    isinstance(generated_inputs["image_file"][0], list)):
+                    initial_image_files = generated_inputs["image_file"][0]
+                elif not image_files: # If empty list returned by generator
+                    initial_image_files = ["<no images found in default>"]
+            else:
+                initial_image_files = ["<default input folder not found>"]
+        except Exception as e:
+            # If any error occurs during initial population (e.g., permissions, unexpected error in generator)
+            # fall back to a safe default. This ensures the class definition doesn't fail.
+            print(f"[LoadImageFromCustomFolder] Error during initial INPUT_TYPES: {e}")
+            initial_image_files = ["<Error populating initial images. Check console.>"]
 
         return {
             "required": {
                 "folder_path": ("STRING", {"default": default_folder_path}),
-                "image_file": (image_files_list, ), # Define as a dropdown
+                "image_file": (initial_image_files, ), # Defines image_file as a dropdown
             }
         }
 
