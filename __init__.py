@@ -1,4 +1,4 @@
-from .load_image_node import LoadImageFromCustomFolder
+from .load_image_from_custom_folder import LoadImageFromCustomFolder
 
 NODE_CLASS_MAPPINGS = {
     "LoadImageFromCustomFolder": LoadImageFromCustomFolder

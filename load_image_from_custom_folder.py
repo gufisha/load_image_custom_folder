@@ -1,15 +1,24 @@
 import os
-from PIL import Image
+# from PIL import Image # This line should be removed or commented if not used
 from nodes import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
 from comfy.utils import load_image
 
 class LoadImageFromCustomFolder:
     @classmethod
     def INPUT_TYPES(cls):
+        # Get initial list of images using the generator and default folder_path
+        default_folder_path = "./input"
+        try:
+            # Call the generator with default inputs
+            generated_inputs = cls.INPUT_TYPES_GENERATOR({"folder_path": default_folder_path})
+            image_files_list = generated_inputs["image_file"][0]
+        except Exception:
+            image_files_list = ["<error loading initial files>"]
+
         return {
             "required": {
-                "folder_path": ("STRING", {"default": "./input"}),
-                "image_file": ("STRING", {"multiline": False}),
+                "folder_path": ("STRING", {"default": default_folder_path}),
+                "image_file": (image_files_list, ), # Define as a dropdown
             }
         }
 
@@ -59,5 +68,5 @@ class LoadImageFromCustomFolder:
                 "image_file": (["<invalid path>"],)
             }
 
-NODE_CLASS_MAPPINGS["LoadImageFromCustomFolder"] = LoadImageFromCustomFolder
-NODE_DISPLAY_NAME_MAPPINGS["LoadImageFromCustomFolder"] = "📂 Load Image from Folder"
+# NODE_CLASS_MAPPINGS["LoadImageFromCustomFolder"] = LoadImageFromCustomFolder
+# NODE_DISPLAY_NAME_MAPPINGS["LoadImageFromCustomFolder"] = "📂 Load Image from Folder"
